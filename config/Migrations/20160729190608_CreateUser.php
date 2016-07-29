@@ -28,6 +28,16 @@ class CreateUser extends AbstractMigration
             'limit' => 255,
             'null' => false,
         ]);
+        $table->addColumn('name', 'string', [
+            'default' => null,
+            'limit' => 255,
+            'null' => false,
+        ]);
+        $table->addColumn('role', 'string', [
+            'default' => null,
+            'limit' => 255,
+            'null' => false,
+        ]);
         $table->addColumn('birthday', 'date', [
             'default' => null,
             'null' => false,

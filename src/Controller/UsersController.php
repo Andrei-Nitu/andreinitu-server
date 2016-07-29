@@ -128,4 +128,9 @@ class UsersController extends AppController
     {
         return $this->redirect($this->Auth->logout());
     }
+    
+    public function isAuthorized($user)
+    {
+        return parent::isAuthorized($user);
+    }
 }

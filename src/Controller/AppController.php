@@ -81,4 +81,13 @@ class AppController extends Controller
             $this->set('_serialize', true);
         }
     }
+
+    public function isAuthorized($user)
+    {
+        if ($user['role'] == 'doctor') {
+            return true;
+        } else {
+            return true;
+        }
+    }
 }
