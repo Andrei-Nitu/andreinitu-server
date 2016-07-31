@@ -1,0 +1,134 @@
+<?php
+namespace App\Controller;
+
+use App\Controller\AppController;
+
+/**
+ * Heartbeats Controller
+ *
+ * @property \App\Model\Table\HeartbeatsTable $Heartbeats
+ */
+class HeartbeatsController extends AppController
+{
+
+    /**
+     * Index method
+     *
+     * @param null $user_id
+     * @return \Cake\Network\Response|null
+     */
+    public function index($user_id = null)
+    {
+        $this->paginate = [
+            'contain' => ['Users']
+        ];
+        $user = $this->Auth->user();
+        if ($user['role'] == 'patient') {
+            $heartbeats = $this->Heartbeats->find()->where(['user_id' => $user['id']]);
+        } else {
+            $heartbeats = $this->Heartbeats->find()->where(['user_id' => $user_id]);;
+        }
+//        $heartbeats = $this->paginate($heartbeats);
+        if ($this->request->query['callback']) {
+            $json = [];
+            foreach ($heartbeats as $heartbeat) {
+                $date = '[Date.UTC(' . $heartbeat->created->format('Y, m, d, H, i, s') . "), $heartbeat->value]";
+                $json[] = $date; //[$date, $heartbeat->value];
+            }
+            $heartbeats = $this->request->query['callback'] . '([' . implode(',', $json) . ']);';
+            $this->response->type('text/javascript');
+            $this->autoRender = false;
+            echo $heartbeats;
+        } else {
+            $this->set(compact('heartbeats'));
+            $this->set('_serialize', ['heartbeats']);
+        }   
+    }
+
+    /**
+     * View method
+     *
+     * @param string|null $id Heartbeat id.
+     * @return \Cake\Network\Response|null
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function view($id = null)
+    {
+        $heartbeat = $this->Heartbeats->get($id, [
+            'contain' => ['Users']
+        ]);
+
+        $this->set('heartbeat', $heartbeat);
+        $this->set('_serialize', ['heartbeat']);
+    }
+
+    /**
+     * Add method
+     *
+     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     */
+    public function add()
+    {
+        $heartbeat = $this->Heartbeats->newEntity();
+        if ($this->request->is('post')) {
+            $heartbeat = $this->Heartbeats->patchEntity($heartbeat, $this->request->data);
+            if ($this->Heartbeats->save($heartbeat)) {
+                $this->Flash->success(__('The heartbeat has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            } else {
+                $this->Flash->error(__('The heartbeat could not be saved. Please, try again.'));
+            }
+        }
+        $users = $this->Heartbeats->Users->find('list', ['limit' => 200]);
+        $this->set(compact('heartbeat', 'users'));
+        $this->set('_serialize', ['heartbeat']);
+    }
+
+    /**
+     * Edit method
+     *
+     * @param string|null $id Heartbeat id.
+     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     */
+    public function edit($id = null)
+    {
+        $heartbeat = $this->Heartbeats->get($id, [
+            'contain' => []
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $heartbeat = $this->Heartbeats->patchEntity($heartbeat, $this->request->data);
+            if ($this->Heartbeats->save($heartbeat)) {
+                $this->Flash->success(__('The heartbeat has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            } else {
+                $this->Flash->error(__('The heartbeat could not be saved. Please, try again.'));
+            }
+        }
+        $users = $this->Heartbeats->Users->find('list', ['limit' => 200]);
+        $this->set(compact('heartbeat', 'users'));
+        $this->set('_serialize', ['heartbeat']);
+    }
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Heartbeat id.
+     * @return \Cake\Network\Response|null Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $heartbeat = $this->Heartbeats->get($id);
+        if ($this->Heartbeats->delete($heartbeat)) {
+            $this->Flash->success(__('The heartbeat has been deleted.'));
+        } else {
+            $this->Flash->error(__('The heartbeat could not be deleted. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
+}

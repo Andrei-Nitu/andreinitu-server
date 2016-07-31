@@ -36,6 +36,8 @@ class UsersTable extends Table
         $this->displayField('id');
         $this->primaryKey('id');
 
+        $this->hasMany('Heartbeats');
+
         $this->addBehavior('Timestamp');
     }
 
@@ -58,7 +60,11 @@ class UsersTable extends Table
 
         $validator
             ->requirePresence('password', 'create')
-            ->notEmpty('password');
+            ->allowEmpty('password', 'update');
+
+        $validator
+            ->requirePresence('name', 'create')
+            ->notEmpty('name');
 
         $validator
             ->email('email')
@@ -71,9 +77,9 @@ class UsersTable extends Table
             ->requirePresence('birthday', 'create')
             ->notEmpty('birthday');
 
-        $validator
-            ->requirePresence('address', 'create')
-            ->notEmpty('address');
+//        $validator
+//            ->requirePresence('address', 'create')
+//            ->notEmpty('address');
 
         return $validator;
     }

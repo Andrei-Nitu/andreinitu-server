@@ -28,7 +28,7 @@ class InsertRootUserSeed extends AbstractSeed
                 'birthday' => date('Y-m-d'),
                 'address' => '',
                 'created' => date('Y-m-d H:i:s'),
-                'updated' => date('Y-m-d H:i:s')
+                'modified' => date('Y-m-d H:i:s')
             ]
         ];
 

@@ -50,6 +50,14 @@ Router::scope('/', function (RouteBuilder $routes) {
      */
     $routes->connect('/', ['controller' => 'Users', 'action' => 'login', 'login']);
 
+    $routes->connect(
+        '/heartbeats/:user_id',
+        ['controller' => 'Heartbeats', 'action' => 'index'],
+        ['user_id' => '\d+', 'pass' => ['user_id']]
+    );
+
+    $routes->extensions(['json', 'xml']);
+
     /**
      * Connect catchall routes for all controllers.
      *
@@ -68,6 +76,9 @@ Router::scope('/', function (RouteBuilder $routes) {
      */
     $routes->fallbacks('DashedRoute');
 });
+
+Router::extensions(['json', 'xml']);
+
 
 /**
  * Load all plugin routes.  See the Plugin documentation on

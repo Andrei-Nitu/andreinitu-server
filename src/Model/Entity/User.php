@@ -9,6 +9,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string $username
  * @property string $password
+ * @property string $authkey
  * @property string $email
  * @property \Cake\I18n\Time $birthday
  * @property string $address

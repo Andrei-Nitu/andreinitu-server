@@ -32,6 +32,16 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
+
+    <?= $this->Html->script('jquery-2.2.4.min.js') ?>
+    <!-- <?= $this->Html->script('bootstrap.min.js') ?>-->
+
+    <!--<?= $this->Html->css('bootstrap.min.css') ?>-->
+    <?= $this->Html->css('font-awesome.min.css') ?>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <script src="http://code.highcharts.com/highcharts.js"></script>
 </head>
 <body>
     <nav class="top-bar expanded" data-topbar role="navigation">

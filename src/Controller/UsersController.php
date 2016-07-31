@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use App\Controller\AppController;
+use Cake\Utility\Text;
 
 /**
  * Users Controller
@@ -18,7 +18,7 @@ class UsersController extends AppController
      */
     public function index()
     {
-        $users = $this->paginate($this->Users);
+        $users = $this->paginate($this->Users->find()->where(['role' => 'patient']));
 
         $this->set(compact('users'));
         $this->set('_serialize', ['users']);
@@ -34,7 +34,7 @@ class UsersController extends AppController
     public function view($id = null)
     {
         $user = $this->Users->get($id, [
-            'contain' => []
+            'contain' => ['Heartbeats']
         ]);
 
         $this->set('user', $user);
@@ -51,6 +51,7 @@ class UsersController extends AppController
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->data);
+            $user->role = 'patient';
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
 
@@ -76,6 +77,10 @@ class UsersController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
+            $data = $this->request->data;
+            if (empty($data['password'])) {
+                unset($data['password']);
+            }
             $user = $this->Users->patchEntity($user, $this->request->data);
             if ($this->Users->save($user)) {
                 $this->Flash->success(__('The user has been saved.'));
@@ -115,6 +120,9 @@ class UsersController extends AppController
         if ($this->request->is('post')) {
             $user = $this->Auth->identify();
             if ($user) {
+                $u = $this->Users->get($user['id']);
+                $u->authkey = Text::uuid();
+                $this->Users->save($u);
                 $this->Auth->setUser($user);
                 return $this->redirect($this->Auth->redirectUrl());
             }
@@ -128,7 +136,7 @@ class UsersController extends AppController
     {
         return $this->redirect($this->Auth->logout());
     }
-    
+
     public function isAuthorized($user)
     {
         return parent::isAuthorized($user);

@@ -80,6 +80,14 @@ class AppController extends Controller
         ) {
             $this->set('_serialize', true);
         }
+
+        $user = $this->Auth->user();
+        if ($user['role'] == 'doctor') {
+            $user['is_admin'] = true;
+        } else {
+            $user['is_admin'] = false;
+        }
+        $this->set('auth_user', $user);
     }
 
     public function isAuthorized($user)
