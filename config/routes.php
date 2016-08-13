@@ -48,6 +48,19 @@ Router::scope('/', function (RouteBuilder $routes) {
      * its action called 'display', and we pass a param to select the view file
      * to use (in this case, src/Template/Pages/home.ctp)...
      */
+//    $routes->scope('/api', function(RouteBuilder $routes_api) {
+//        $routes_api->connect('/', ['controller' => 'Api', 'action' => 'login', 'login']);
+//        $routes_api->extensions(['json', 'xml', 'ajax']);
+//        $routes_api->resources('Api');
+//        $routes_api->resources('Users');
+//
+//        $routes_api->connect('/test', ['controller' => 'Api', 'action' => 'test', 'test']);
+
+//        $routes_api->connect('/:action', ['controller' => 'Api'], ['routeClass' => 'DashedRoute']);
+//        $routes_api->fallbacks('DashedRoute');
+//    });
+
+
     $routes->connect('/', ['controller' => 'Users', 'action' => 'login', 'login']);
 
     $routes->connect(
@@ -56,7 +69,9 @@ Router::scope('/', function (RouteBuilder $routes) {
         ['user_id' => '\d+', 'pass' => ['user_id']]
     );
 
-    $routes->extensions(['json', 'xml']);
+    $routes->extensions(['json', 'xml', 'ajax']);
+    $routes->resources('Users');
+    $routes->resources('Heartbeats');
 
     /**
      * Connect catchall routes for all controllers.

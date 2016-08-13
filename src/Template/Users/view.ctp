@@ -19,6 +19,10 @@
             <td><?= h($user->email) ?></td>
         </tr>
         <tr>
+            <th><?= __('Alert heartbeat value') ?></th>
+            <td><?= h($user->alert_value) ?></td>
+        </tr>
+        <tr>
             <th><?= __('Address') ?></th>
             <td><?= h($user->address) ?></td>
         </tr>

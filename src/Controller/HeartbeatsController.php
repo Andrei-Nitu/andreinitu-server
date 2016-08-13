@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
 
 /**
  * Heartbeats Controller
@@ -10,6 +11,24 @@ use App\Controller\AppController;
  */
 class HeartbeatsController extends AppController
 {
+    private $authUser = null;
+
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+        $this->Auth->deny();
+        $this->loadModel('Users');
+
+        $token = $this->request->header("X-Authorization");
+
+        $user = $this->Users->findByAuthkey($token)->toArray();
+        if (count($user) == 1) {
+            $this->Auth->allow(['add']);
+            $user = $user[0];
+            $this->authUser = clone $user;
+        }
+
+    }
 
     /**
      * Index method
@@ -71,11 +90,15 @@ class HeartbeatsController extends AppController
     {
         $heartbeat = $this->Heartbeats->newEntity();
         if ($this->request->is('post')) {
-            $heartbeat = $this->Heartbeats->patchEntity($heartbeat, $this->request->data);
+            $data = $this->request->data;
+            $data['user_id'] = $this->authUser['id'];
+            $heartbeat = $this->Heartbeats->patchEntity($heartbeat, $data);
             if ($this->Heartbeats->save($heartbeat)) {
-                $this->Flash->success(__('The heartbeat has been saved.'));
+                if (!$this->request->is('json')) {
+                    $this->Flash->success(__('The heartbeat has been saved.'));
+                    return $this->redirect(['action' => 'index']);
+                }
 
-                return $this->redirect(['action' => 'index']);
             } else {
                 $this->Flash->error(__('The heartbeat could not be saved. Please, try again.'));
             }
@@ -130,5 +153,10 @@ class HeartbeatsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function isAuthorized($user)
+    {
+        return parent::isAuthorized($user);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use Cake\Event\Event;
 use Cake\Utility\Text;
 
 /**
@@ -10,6 +11,12 @@ use Cake\Utility\Text;
  */
 class UsersController extends AppController
 {
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+        $this->Auth->deny();
+        $this->Auth->allow(['logout', 'login']);
+    }
 
     /**
      * Index method
@@ -117,18 +124,28 @@ class UsersController extends AppController
     public function login()
     {
         $user = $this->Users->newEntity();
+        $this->response->header('Access-Control-Allow-Origin', '*');
         if ($this->request->is('post')) {
-            $user = $this->Auth->identify();
-            if ($user) {
-                $u = $this->Users->get($user['id']);
-                $u->authkey = Text::uuid();
-                $this->Users->save($u);
-                $this->Auth->setUser($user);
-                return $this->redirect($this->Auth->redirectUrl());
+            $data = $this->request->data;
+            if (isset($data['token'])) {
+                $user = $this->Users->findByAuthkey($data['token'])->toArray();
+            } else {
+                $user = $this->Auth->identify();
+                if ($user) {
+                    $u = $this->Users->get($user['id']);
+                    $u->authkey = Text::uuid();
+                    $this->Users->save($u);
+                    $user = $u->toArray();
+                    $this->Auth->setUser($user);
+                    if (!$this->request->is('json')) {
+                        return $this->redirect($this->Auth->redirectUrl());
+                    }
+                }
+                $this->Flash->error(__('Invalid username or password, try again'));
             }
-            $this->Flash->error(__('Invalid username or password, try again'));
         }
-        $this->set('user', $user);
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
         $this->viewBuilder()->layout('login');
     }
 
