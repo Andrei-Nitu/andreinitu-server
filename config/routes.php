@@ -69,6 +69,12 @@ Router::scope('/', function (RouteBuilder $routes) {
         ['user_id' => '\d+', 'pass' => ['user_id']]
     );
 
+    $routes->connect(
+        '/users/:user_id/histories/add',
+        ['controller' => 'Histories', 'action' => 'add'],
+        ['user_id' => '\d+', 'pass' => ['user_id'], '_name' => 'addhistory']
+    );
+
     $routes->extensions(['json', 'xml', 'ajax']);
     $routes->resources('Users');
     $routes->resources('Heartbeats');

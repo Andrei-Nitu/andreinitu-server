@@ -41,7 +41,7 @@ class UsersController extends AppController
     public function view($id = null)
     {
         $user = $this->Users->get($id, [
-            'contain' => ['Heartbeats']
+            'contain' => ['Heartbeats', 'Histories']
         ]);
 
         $this->set('user', $user);
@@ -124,25 +124,18 @@ class UsersController extends AppController
     public function login()
     {
         $user = $this->Users->newEntity();
-        $this->response->header('Access-Control-Allow-Origin', '*');
         if ($this->request->is('post')) {
-            $data = $this->request->data;
-            if (isset($data['token'])) {
-                $user = $this->Users->findByAuthkey($data['token'])->toArray();
-            } else {
-                $user = $this->Auth->identify();
-                if ($user) {
-                    $u = $this->Users->get($user['id']);
-                    $u->authkey = Text::uuid();
-                    $this->Users->save($u);
-                    $user = $u->toArray();
-                    $this->Auth->setUser($user);
-                    if (!$this->request->is('json')) {
-                        return $this->redirect($this->Auth->redirectUrl());
-                    }
+            $user = $this->Auth->identify();
+            if ($user) {
+                $this->Auth->setUser($user);
+                if ($user['role'] == 'doctor') {
+                    return $this->redirect($this->Auth->redirectUrl());
+                } else {
+                    return $this->redirect(['controller' => 'Users', 'action' => 'view', $user['id']]);
                 }
-                $this->Flash->error(__('Invalid username or password, try again'));
+
             }
+            $this->Flash->error(__('Invalid username or password, try again'));
         }
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);

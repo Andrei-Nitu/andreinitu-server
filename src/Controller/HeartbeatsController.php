@@ -49,10 +49,27 @@ class HeartbeatsController extends AppController
         }
 //        $heartbeats = $this->paginate($heartbeats);
         if ($this->request->query['callback']) {
+            $date = date('Y-m-d');
+            if (!empty($this->request->query['period'])) {
+                switch ($this->request->query['period']) {
+                    case 'day':
+                        $date = date('Y-m-d');
+                        break;
+                    case 'month':
+                        $date = date('Y-m-01');
+                        break;
+                    case 'year':
+                        $date = date('Y-01-01');
+                        break;
+                }
+            }
+            $heartbeats = $heartbeats->where(['DATE(created) >=' => $date]);
             $json = [];
             foreach ($heartbeats as $heartbeat) {
-                $date = '[Date.UTC(' . $heartbeat->created->format('Y, m, d, H, i, s') . "), $heartbeat->value]";
-                $json[] = $date; //[$date, $heartbeat->value];
+                $month = ((int) $heartbeat->created->format('n'))-1;
+                $month = $month < 10 ? '0'.$month : $month;
+                $date = '[Date.UTC(' . $heartbeat->created->format('Y, '.$month.', d, H, i, s') . "), $heartbeat->value]";
+                $json[] = $date;
             }
             $heartbeats = $this->request->query['callback'] . '([' . implode(',', $json) . ']);';
             $this->response->type('text/javascript');

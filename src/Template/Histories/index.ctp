@@ -2,7 +2,7 @@
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('New History'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('List Patients'), ['controller' => 'Users', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?></li>
     </ul>
 </nav>
@@ -26,9 +26,9 @@
                 <td><?= h($history->created) ?></td>
                 <td><?= h($history->modified) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $history->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $history->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $history->id], ['confirm' => __('Are you sure you want to delete # {0}?', $history->id)]) ?>
+                    <?= $this->Html->link(__('View'), ['controller' => 'Histories', 'action' => 'view', $history->id]) ?>
+                    <?= $this->Html->link(__('Edit'), ['controller' => 'Histories', 'action' => 'edit', $history->id]) ?>
+                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'Histories', 'action' => 'delete', $history->id], ['confirm' => __('Are you sure you want to delete # {0}?', $history->id)]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>

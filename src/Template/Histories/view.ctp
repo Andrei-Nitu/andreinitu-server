@@ -1,16 +1,16 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
+        <?php if ($auth_user['role'] == 'doctor'): ?>
         <li><?= $this->Html->link(__('Edit History'), ['action' => 'edit', $history->id]) ?> </li>
         <li><?= $this->Form->postLink(__('Delete History'), ['action' => 'delete', $history->id], ['confirm' => __('Are you sure you want to delete # {0}?', $history->id)]) ?> </li>
-        <li><?= $this->Html->link(__('List Histories'), ['action' => 'index']) ?> </li>
         <li><?= $this->Html->link(__('New History'), ['action' => 'add']) ?> </li>
-        <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?> </li>
-        <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?> </li>
+        <?php endif; ?>
     </ul>
 </nav>
 <div class="histories view large-9 medium-8 columns content">
-    <h3><?= h($history->id) ?></h3>
+<!--    <h3><?= h($history->diagnostic) ?></h3> -->
+    <!--
     <table class="vertical-table">
         <tr>
             <th><?= __('User') ?></th>
@@ -28,7 +28,7 @@
             <th><?= __('Modified') ?></th>
             <td><?= h($history->modified) ?></td>
         </tr>
-    </table>
+    </table>-->
     <div class="row">
         <h4><?= __('Treatment') ?></h4>
         <?= $this->Text->autoParagraph(h($history->treatment)); ?>

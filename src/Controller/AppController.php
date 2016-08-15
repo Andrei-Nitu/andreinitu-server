@@ -95,7 +95,19 @@ class AppController extends Controller
         if ($user['role'] == 'doctor') {
             return true;
         } else {
-            return true;
+            if ($this->name == 'Users' && $this->request->action == 'edit') {
+                return true;
+            }
+            if ($this->name == 'Users' && $this->request->action == 'view') {
+                return true;
+            }
+            if ($this->name == 'Heartbeats') {
+                return true;
+            }
+            if ($this->name == 'Histories') {
+                return true;
+            }
+            return false;
         }
     }
 }

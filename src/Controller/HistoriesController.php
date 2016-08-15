@@ -47,23 +47,29 @@ class HistoriesController extends AppController
     /**
      * Add method
      *
+     * @param null $user_id
      * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($user_id=null)
     {
+        if ($user_id == null)  {
+            $user = $this->Auth->user();
+            $user_id = $user['id'];
+        }
         $history = $this->Histories->newEntity();
         if ($this->request->is('post')) {
-            $history = $this->Histories->patchEntity($history, $this->request->data);
+            $data = $this->request->data;
+            $data['user_id'] = $user_id;
+            $history = $this->Histories->patchEntity($history, $data);
             if ($this->Histories->save($history)) {
                 $this->Flash->success(__('The history has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['controller' => 'Users', 'action' => 'view', $user_id]);
             } else {
                 $this->Flash->error(__('The history could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Histories->Users->find('list', ['limit' => 200]);
-        $this->set(compact('history', 'users'));
+        $this->set(compact('history'));
         $this->set('_serialize', ['history']);
     }
 

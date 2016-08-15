@@ -37,6 +37,7 @@ class UsersTable extends Table
         $this->primaryKey('id');
 
         $this->hasMany('Heartbeats');
+        $this->hasMany('Histories');
 
         $this->addBehavior('Timestamp');
     }
