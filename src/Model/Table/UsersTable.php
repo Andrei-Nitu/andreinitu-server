@@ -74,9 +74,9 @@ class UsersTable extends Table
             ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
-            ->date('birthday')
-            ->requirePresence('birthday', 'create')
-            ->notEmpty('birthday');
+            ->date('birthday');
+//            ->requirePresence('birthday', 'create')
+//            ->notEmpty('birthday');
 
 //        $validator
 //            ->requirePresence('address', 'create')

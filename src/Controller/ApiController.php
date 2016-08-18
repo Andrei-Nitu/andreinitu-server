@@ -17,6 +17,7 @@ namespace App\Controller;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Mailer\Email;
+use Cake\Utility\Text;
 
 /**
  * Application Controller
@@ -96,6 +97,10 @@ class ApiController extends Controller
         $this->autoRender = false;
 
         if ($user) {
+            $user_obj = $this->Users->get($user['id']);
+            $user_obj->authkey = Text::uuid();
+            $this->Users->save($user_obj);
+            $user['authkey'] = $user_obj->authkey;
             echo json_encode($user);
         } else {
             echo json_encode(['error' => 'Provide auth info.']);
@@ -128,11 +133,12 @@ class ApiController extends Controller
 
             $heartbeat = $this->Heartbeats->patchEntity($heartbeat, $data);
 
-            if ($heartbeat->alert_value != null && $heartbeat->value > $heartbeat->alert_value) {
+            if ($user['alert_value'] != null && $heartbeat->value > $user['alert_value']) {
+                $doctor = $this->Users->get(10);
 
                 $email = new Email('default');
                 $email
-                    ->to('bogdan.boamfa@gmail.com')
+                    ->to($doctor->email)
                     ->subject('Pacient in stare critica')
                     ->send('Pacientul '.$user['name'].' se afla in stara critica');
             }

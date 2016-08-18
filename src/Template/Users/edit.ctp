@@ -1,7 +1,9 @@
+<?php $this->assign('title', 'Edit patient');?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <?php if ($auth_user['role'] == 'doctor'): ?>
+        <li><?= $this->Html->link(__('List Doctors'), ['action' => 'listDoctor']) ?></li>
         <li><?= $this->Form->postLink(
                 __('Delete'),
                 ['action' => 'delete', $user->id],

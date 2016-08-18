@@ -1,7 +1,9 @@
+<?php $this->assign('title', 'Add patient');?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
         <li><?= $this->Html->link(__('List Patients'), ['action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('List Doctors'), ['action' => 'listDoctor']) ?></li>
     </ul>
 </nav>
 <div class="users form large-9 medium-8 columns content">

@@ -14,7 +14,7 @@ class AddMaxHeartbeatToUsers extends AbstractMigration
     {
         $table = $this->table('users');
         $table->addColumn('alert_value', 'integer', [
-            'default' => null,
+            'default' => 0,
             'limit' => 11,
             'null' => null,
         ]);

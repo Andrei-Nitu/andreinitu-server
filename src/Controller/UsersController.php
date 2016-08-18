@@ -18,6 +18,11 @@ class UsersController extends AppController
         $this->Auth->allow(['logout', 'login']);
     }
 
+    public function beforeRender(Event $event)
+    {
+        parent::beforeRender($event);
+    }
+
     /**
      * Index method
      *
@@ -26,7 +31,6 @@ class UsersController extends AppController
     public function index()
     {
         $users = $this->paginate($this->Users->find()->where(['role' => 'patient']));
-
         $this->set(compact('users'));
         $this->set('_serialize', ['users']);
     }
@@ -69,6 +73,33 @@ class UsersController extends AppController
         }
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
+    }
+
+
+    public function addDoctor()
+    {
+        $user = $this->Users->newEntity();
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->data);
+            $user->role = 'doctor';
+            if ($this->Users->save($user)) {
+                $this->Flash->success(__('The user has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            } else {
+                $this->Flash->error(__('The user could not be saved. Please, try again.'));
+            }
+        }
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
+    }
+
+    public function listDoctor()
+    {
+        $users = $this->paginate($this->Users->find()->where(['role' => 'doctor']));
+
+        $this->set(compact('users'));
+        $this->set('_serialize', ['users']);
     }
 
     /**

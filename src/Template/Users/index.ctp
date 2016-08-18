@@ -1,7 +1,12 @@
+<?php $this->assign('title', 'Patients');?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
+        <?php if ($auth_user['role'] == 'doctor'): ?>
         <li><?= $this->Html->link(__('New Patient'), ['action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('New Doctor'), ['action' => 'addDoctor']) ?></li>
+        <li><?= $this->Html->link(__('List Doctors'), ['action' => 'listDoctor']) ?></li>
+        <?php endif; ?>
     </ul>
 </nav>
 <div class="users index large-9 medium-8 columns content">
