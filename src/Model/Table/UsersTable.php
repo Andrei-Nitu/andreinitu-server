@@ -78,6 +78,10 @@ class UsersTable extends Table
 //            ->requirePresence('birthday', 'create')
 //            ->notEmpty('birthday');
 
+        $validator
+            ->requirePresence('doctor_id', 'create')
+            ->notEmpty('doctor_id');
+
 //        $validator
 //            ->requirePresence('address', 'create')
 //            ->notEmpty('address');

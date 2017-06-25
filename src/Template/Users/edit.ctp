@@ -23,6 +23,7 @@
             echo $this->Form->input('password', ['value' => '']);
             echo $this->Form->input('email');
             echo $this->Form->input('alert_value');
+            echo $this->Form->input('doctor_id', ['options' => $doctors]);
             echo $this->Form->input('birthday');
             echo $this->Form->input('address');
         ?>

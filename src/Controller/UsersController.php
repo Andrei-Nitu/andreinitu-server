@@ -71,7 +71,11 @@ class UsersController extends AppController
                 $this->Flash->error(__('The user could not be saved. Please, try again.'));
             }
         }
-        $this->set(compact('user'));
+        $doctors = $this->Users->find('list', [
+            'keyField' => 'id',
+            'valueField' => 'name'
+        ])->where(['role' => 'doctor']);
+        $this->set(compact('user', 'doctors'));
         $this->set('_serialize', ['user']);
     }
 
@@ -117,7 +121,7 @@ class UsersController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->data;
             if (empty($data['password'])) {
-                unset($data['password']);
+                $data['password'] = $user->password;
             }
             $user = $this->Users->patchEntity($user, $this->request->data);
             if ($this->Users->save($user)) {
@@ -128,7 +132,11 @@ class UsersController extends AppController
                 $this->Flash->error(__('The user could not be saved. Please, try again.'));
             }
         }
-        $this->set(compact('user'));
+        $doctors = $this->Users->find('list', [
+            'keyField' => 'id',
+            'valueField' => 'name'
+        ])->where(['role' => 'doctor']);
+        $this->set(compact('user', 'doctors'));
         $this->set('_serialize', ['user']);
     }
 
@@ -154,6 +162,7 @@ class UsersController extends AppController
 
     public function login()
     {
+
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
             $user = $this->Auth->identify();

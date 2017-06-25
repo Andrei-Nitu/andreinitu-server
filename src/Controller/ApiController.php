@@ -119,6 +119,7 @@ class ApiController extends Controller
 
     public function addHeartbeat() {
         $this->loadModel('Heartbeats');
+        $this->loadModel('Users');
         $this->response->header('Access-Control-Allow-Origin', '*');
         $this->response->type('application/json');
         $this->autoRender = false;
@@ -133,8 +134,8 @@ class ApiController extends Controller
 
             $heartbeat = $this->Heartbeats->patchEntity($heartbeat, $data);
 
-            if ($user['alert_value'] != null && $heartbeat->value > $user['alert_value']) {
-                $doctor = $this->Users->get(10);
+            if ($user['alert_value'] != null && $heartbeat->value > $user['alert_value'] && $user['doctor_id']) {
+                $doctor = $this->Users->get($user['doctor_id']);
 
                 $email = new Email('default');
                 $email
